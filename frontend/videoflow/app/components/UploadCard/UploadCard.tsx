@@ -28,7 +28,7 @@ export default function UploadCard({ onUploadComplete }: UploadCardProps) {
         intervalRef.current = setInterval(() => {
             setProgress((prev) => {
                 if (prev >= 100) return prev;
-                return prev + 5;
+                return prev + 8;
             });
         }, 150);
 

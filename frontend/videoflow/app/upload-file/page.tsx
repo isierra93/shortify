@@ -1,15 +1,17 @@
 "use client";
 import { uploadVideo, getConversionStatus } from "../services/video.service";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import UploadCard from "../components/UploadCard/UploadCard";
 import VideoEditor from "../components/VideoEditor/VideoEditor";
 import GeneratedVideo from "../components/GeneratedVideo/GeneratedVideo";
-import Download from "../Download/page";
+import { useRouter } from "next/navigation";
+import CortoSuccess from "../components/CortoSuccess/CortoSuccess";
+
 
 
 const steps = ["Subir", "Seleccionar", "Generar", "Descargar"];
 
-function Timeline({ currentStep }: { currentStep: number }) {
+export function Timeline({ currentStep }: { currentStep: number }) {
     return (
         <div className="mt-17.5 mb-20 flex w-full justify-center px-5 sm:px-12 md:px-39 lg:px-0">
             <div
@@ -56,6 +58,8 @@ export default function Upload() {
     const [currentStep, setCurrentStep] = useState(1);
     const [file, setFile] = useState<File | null>(null);
     const [outputUrl, setOutputUrl] = useState<string | null>(null);
+    const showSuccess = currentStep === 4 && !!outputUrl;
+    const router=useRouter();
 
     //generate
     const handleGenerate = async () => {
@@ -76,7 +80,7 @@ export default function Upload() {
                         setOutputUrl(
                             `http://localhost:8080${updated.outputUrl}`
                         );
-                        setCurrentStep(4);
+                        setCurrentStep(4)
                     }
 
                     if (updated.status === "FAILED") {
@@ -91,7 +95,21 @@ export default function Upload() {
         } catch (error) {
             console.error("Error subiendo video:", error);
         }
-    };
+    }; 
+    
+    useEffect(() => {
+        if (!showSuccess) return;
+
+        const timer = setTimeout(() => {
+            router.push(`/Download?videoUrl=${encodeURIComponent(outputUrl!)}`);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [showSuccess, outputUrl, router]);
+
+     if (showSuccess) {
+         return <CortoSuccess />;
+     }
     return (
         <>
             {/* Barra de progreso 1, 2, 3, 4 */}
@@ -115,14 +133,12 @@ export default function Upload() {
                 <div className="mt-10 text-center text-lg font-semibold">
                     <GeneratedVideo
                         onGenerate={() => {
-                            setCurrentStep(4);
+                            handleGenerate();
                         }}
                     />
                 </div>
             )}
-            {currentStep === 4 && outputUrl && (
-                <Download videoUrl={outputUrl} />
-            )}
+        
         </>
     );
 }
