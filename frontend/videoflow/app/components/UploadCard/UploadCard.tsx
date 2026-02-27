@@ -28,7 +28,7 @@ export default function UploadCard({ onUploadComplete }: UploadCardProps) {
         intervalRef.current = setInterval(() => {
             setProgress((prev) => {
                 if (prev >= 100) return prev;
-                return prev + 5;
+                return prev + 8;
             });
         }, 150);
 
@@ -41,7 +41,7 @@ export default function UploadCard({ onUploadComplete }: UploadCardProps) {
             setProgress(100);
             setStatus("completed");
 
-            // avisamos al padre
+            //avis al componente padre
             if (onUploadComplete) {
                 onUploadComplete(selectedFile);
             }
