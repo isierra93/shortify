@@ -304,6 +304,7 @@ Descarga el video convertido.
 <td align="center"><b>Hector Duarte</b><br/>Frontend Developer<br/><a href="https://www.linkedin.com/in/hector-duarte">LinkedIn</a></td>
 <td align="center"><b>Iván Sierra</b><br/>Backend Developer<br/><a href="https://linkedin.com/in/isierra93">LinkedIn</a></td>
 <td align="center"><b>Martin Rioja</b><br/>Backend Developer<br/><a href="https://www.linkedin.com/in/martinriojac/">LinkedIn</a></td>
+<td align="center"><b>Ricardo Avila</b><br/>Backend Developer<br/><a href="https://www.linkedin.com/in/ricardo-leandro-avila-578a0422a/">LinkedIn</a></td>
 </tr>
 </table>
 
