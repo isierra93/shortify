@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mysql-db:
     image: mysql:8.0
@@ -23,7 +21,7 @@ services:
     volumes:
       - ./backend/videos:/app/videos
       - ./backend/videos_procesados:/app/videos_procesados
-      # Volumen compartido con ai-service para intercambiar archivos sin HTTP
+      # Volumen compartido con ai-service: el backend guarda aquí los videos subidos
       - shared_videos:/app/videos_subidos
     depends_on:
       - mysql-db
@@ -35,6 +33,8 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       # URL del microservicio IA (usada por VideoAnalysisService en Java)
       - AI_SERVICE_URL=http://ai-service:8000
+      # Desactivado por defecto; se activa con el profile 'ai'
+      - AI_SERVICE_ENABLED=true
 
   frontend:
     build:
@@ -76,6 +76,9 @@ services:
       - shared_videos:/app/videos_subidos
     environment:
       - PYTHONUNBUFFERED=1
+      # Para activar la IA en el backend, levantar con:
+      #   docker compose --profile ai up
+      # y agregar AI_SERVICE_ENABLED=true en el bloque environment del backend
 
 volumes:
   mysql_data:
