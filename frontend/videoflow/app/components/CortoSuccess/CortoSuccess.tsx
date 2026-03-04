@@ -1,5 +1,5 @@
 import SuccessIcon from "../UI/icons/Success";
-import { Timeline } from "@/app/upload-file/page";
+import Timeline from "../Timeline/Timeline";
 export default function CortoSuccess() {
     
     return (

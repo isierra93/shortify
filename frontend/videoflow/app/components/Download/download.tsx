@@ -1,11 +1,13 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import DownloadIcon from "../UI/icons/Download-icon";
+import RetryDownloadIcon from "../UI/icons/retry-Icon";
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { Timeline } from "@/app/upload-file/page";
+import Timeline from "../Timeline/Timeline";
 import PlayDownloadIcon from "../UI/icons/play-Download-icon";
 import { Volume2, VolumeOff } from "lucide-react";
+
 
 export default function Download() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -19,7 +21,7 @@ export default function Download() {
     const volumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [showControls, setShowControls] = useState(true);
     const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    
+    const [isDownloading, setIsDownloading] = useState(false);
     //obtenemos el video
     const searchParams = useSearchParams();
     const videoUrl = searchParams.get("videoUrl");
@@ -29,22 +31,29 @@ export default function Download() {
     }
     //descarga
     const handleDownload = async () => {
-        try {
-            const response = await fetch(videoUrl);
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
+        setIsDownloading(true);
 
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "Shortify-corto.mp4";
-            document.body.appendChild(a);
-            a.click();
+        // Esperamos 3 segundos antes de descargar
+        setTimeout(async () => {
+            try {
+                const response = await fetch(videoUrl);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
 
-            a.remove();
-            window.URL.revokeObjectURL(url);
-        } catch (error) {
-            console.error("Error descargando el video:", error);
-        }
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "Shortify-corto.mp4";
+                document.body.appendChild(a);
+                a.click();
+
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error("Error descargando el video:", error);
+            } finally {
+                setIsDownloading(false); 
+            }
+        }, 3000);
     };
 
     //tiempo del video
@@ -131,7 +140,7 @@ export default function Download() {
             <Timeline currentStep={4} />
             <section className="mx-auto mt-15 mb-18.25 flex flex-col items-center gap-10 lg:h-130.5 lg:w-230 lg:flex-row lg:justify-between">
                 <div
-                    className="12px relative mt-10 h-105 w-full max-w-81.25 rounded-xl border border-[#00000047] lg:mt-13 lg:h-118 lg:w-81.25"
+                    className="12px relative mt-10 h-115 w-full max-w-81.25 rounded-xl border border-[#00000047] lg:mt-13 lg:h-118 lg:w-81.25"
                     onMouseMove={showControlsTemporarily}
                     onTouchStart={showControlsTemporarily}
                 >
@@ -226,7 +235,7 @@ export default function Download() {
                     </div>
                 </div>
 
-                <div className="flex w-full max-w-104.75 flex-col lg:mb-24 lg:h-106.75 lg:w-104.75">
+                <div className="flex w-full max-w-94.75 flex-col lg:mb-24 lg:h-106.75 lg:w-104.75">
                     <div className="gap-6">
                         <p className="text-[21px] font-medium text-[#050315]">
                             Tu corto ya está listo
@@ -268,10 +277,24 @@ export default function Download() {
                     <div className="mt-8 w-full lg:h-30 lg:w-104.75">
                         <button
                             onClick={handleDownload}
-                            className="flex h-12.5 w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] bg-[#2F27CE] px-6 py-3 text-[#FAFAFA]"
+                            className={`flex h-12.5 w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] ${isDownloading ? "bg-[#433BFF66]/40" : "bg-[#2F27CE]"} px-6 py-3 text-[#FAFAFA]`}
+                            disabled={isDownloading}
                         >
-                            <DownloadIcon />
-                            Descargar
+                            {isDownloading ? (
+                                <>
+                                    <span className="animate-spin text-gray-400">
+                                        <RetryDownloadIcon />
+                                    </span>
+                                    <p className="text-[#505050]">
+                                        Descargando
+                                    </p>
+                                </>
+                            ) : (
+                                <>
+                                    <DownloadIcon />
+                                    <p>Descargar</p>
+                                </>
+                            )}
                         </button>
 
                         <Link
