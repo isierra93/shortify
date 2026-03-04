@@ -32,7 +32,7 @@ export const cards: CardType[] = [
         icon: <CardIcon3 />,
         title: "Listo para publicar",
         description:
-            "Exportá en el formato perfecto para todas las principales plataformas sociales.",
+            "Descargá tu video de manera rápida y lista para usar en todas las redes sociales.",
     },
 ];
 

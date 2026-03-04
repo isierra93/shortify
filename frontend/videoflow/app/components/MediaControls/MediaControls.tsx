@@ -144,6 +144,7 @@ export default function MediaControls({
                     {/* círculo start */}
                     <div
                         onMouseDown={() => setDragging("start")}
+                        onTouchStart={() => setDragging("start")}
                         className="absolute h-3.75 w-3.75 cursor-pointer rounded-full border border-[#2F27CE] bg-white"
                         style={{
                             left: `${start}%`,
@@ -154,6 +155,7 @@ export default function MediaControls({
                     {/* círculo end */}
                     <div
                         onMouseDown={() => setDragging("end")}
+                        onTouchStart={() => setDragging("end")}
                         className="absolute h-3.75 w-3.75 cursor-pointer rounded-full border border-[#2F27CE] bg-white"
                         style={{
                             left: `${end}%`,

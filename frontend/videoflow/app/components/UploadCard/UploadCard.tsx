@@ -10,10 +10,12 @@ export default function UploadCard({ onUploadComplete }: UploadCardProps) {
     const [file, setFile] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [progress, setProgress] = useState(10);
-    const [status, setStatus] = useState<"idle" | "uploading" | "completed">("idle");
+    const [status, setStatus] = useState<"idle" | "uploading" | "completed">(
+        "idle"
+    );
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const completedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+    const [isDragging, setIsDragging] = useState(false);
     const MAX_SIZE = 500 * 1024 * 1024;
 
     const handleFile = (selectedFile: File) => {
@@ -65,7 +67,7 @@ export default function UploadCard({ onUploadComplete }: UploadCardProps) {
             }
         };
     }, []);
-    
+
     //inicia-termina el error
     useEffect(() => {
         if (!error) return;
@@ -77,10 +79,37 @@ export default function UploadCard({ onUploadComplete }: UploadCardProps) {
         return () => clearTimeout(timer);
     }, [error]);
 
-    //"primera sección del carga de video responisve"
+    
+    
+
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault(); 
+    };
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const droppedFile = e.dataTransfer.files[0];
+        if (droppedFile) handleFile(droppedFile);
+    };
+
+   
     return (
-        <div className="mt-20 mb-18.25 w-full px-5 sm:px-12 md:px-39">
-            <div className="mx-auto flex w-full flex-col gap-7.25 rounded-2xl border border-dashed border-[#797979] bg-[#F2F2F7] px-4 py-8 sm:px-6 lg:h-89.25 lg:w-178">
+        <div className="mt-20 mb-18.25 w-full px-5">
+            <div
+                className={`mx-auto flex w-full flex-col gap-7.25 rounded-2xl border border-dashed ${isDragging ? "border-violet-300" : "border-[#797979]"} bg-[#F2F2F7] px-4 py-8 sm:px-6 lg:h-89.25 lg:w-178`}
+                onDragEnter={handleDragEnter}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+            >
                 {status === "idle" && (
                     <p className="m-auto flex h-5.5 w-22.5 items-center justify-center text-center text-gray-500">
                         <UploadIcon />
@@ -130,9 +159,9 @@ export default function UploadCard({ onUploadComplete }: UploadCardProps) {
                             Formatos compatibles: MP4, WebM, MOV, AVI • Tamaño
                             máximo: 500 MB
                         </p>
-                        {/*preguntar!!!!*/}
+                        
                         {error && (
-                            <div className="pointer-events-none fixed inset-0 z-50 flex items-end justify-center mb-15">
+                            <div className="pointer-events-none fixed inset-0 z-50 mb-15 flex items-end justify-center">
                                 <div className="animate-errorOpen relative overflow-hidden rounded-md border border-red-500/60 bg-[#4d4c4c] px-8 py-4">
                                     <div className="absolute top-0 left-0 h-full w-1 bg-red-600" />
                                     <div className="absolute top-0 right-0 h-full w-1 bg-red-600" />

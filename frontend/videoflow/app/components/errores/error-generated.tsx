@@ -1,20 +1,20 @@
 "use client";
 import ErrorIcon from "../UI/icons/Error-Icon";
 import RetryIcon from "../UI/icons/retry-Icon";
-import { Timeline } from "@/app/upload-file/page";
+import Timeline from "../Timeline/Timeline";
 
 export default function ErrorGenerated({ onRetry }: { onRetry: () => void }) {
     return (
         <>
             <Timeline currentStep={1} />
-            <div className="mt-20 mb-18.25 flex w-full justify-center px-5 py-10 sm:px-12 md:px-39 lg:px-91 2xl:px-151">
+            <div className="mt-20 mb-18.25 flex w-full justify-center px-5 py-10">
                 <div className="mx-auto flex max-h-89 min-h-89.25 w-151 max-w-3xl flex-col items-center justify-center rounded-2xl border border-gray-300/90 bg-[#F2F2F7] text-center shadow-[0px_4px_17.6px_0px_#0000001A]">
                     <h2 className="py-8 text-[27px] font-semibold text-[#000000]">
                         Algo salió mal
                     </h2>
 
                     <div className="mb-8 flex items-center justify-center">
-                        <ErrorIcon />
+                        <ErrorIcon className="animate-pulseError" />
                     </div>
 
                     <button
