@@ -77,14 +77,11 @@ public class ConversionJobService {
 
     public ConversionJob getJob(String id) {
 
-        logger.info("Consultando job con ID: {}", id);
+        logger.debug("Consultando job con ID: {}", id);
 
         return repository.findById(id)
-                .orElseThrow(() -> {
-                    logger.warn("Job no encontrado con ID: {}", id);
-                    return new ResourceNotFoundException(
-                            "No se encontró un archivo con el id: " + id + " ."
-                    );
-                });
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No se encontró un archivo con el id: " + id + " ."
+                ));
     }
 }

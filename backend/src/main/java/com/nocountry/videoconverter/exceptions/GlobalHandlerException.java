@@ -5,6 +5,8 @@ import com.nocountry.videoconverter.exceptions.business.EmptyFileException;
 import com.nocountry.videoconverter.exceptions.business.ResourceNotFoundException;
 import com.nocountry.videoconverter.exceptions.technical.StorageException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,8 +17,12 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalHandlerException {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalHandlerException.class);
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDto> handleGenericException(Exception e, HttpServletRequest request) {
+        logger.error("Error inesperado en {} {}: {}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
+
         ErrorDto errorDto = new ErrorDto(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -29,6 +35,7 @@ public class GlobalHandlerException {
 
     @ExceptionHandler(EmptyFileException.class)
     public ResponseEntity<ErrorDto> handleEmptyFileException(EmptyFileException e, HttpServletRequest request) {
+        logger.warn("Archivo vacío en {} {}: {}", request.getMethod(), request.getRequestURI(), e.getMessage());
 
         ErrorDto errorDto = new ErrorDto(
                 LocalDateTime.now(),
@@ -44,6 +51,7 @@ public class GlobalHandlerException {
     public ResponseEntity<ErrorDto> handleResourceNotFoundException(
             ResourceNotFoundException e,
             HttpServletRequest request) {
+        logger.warn("Recurso no encontrado en {} {}: {}", request.getMethod(), request.getRequestURI(), e.getMessage());
 
         ErrorDto errorDto = new ErrorDto(
                 LocalDateTime.now(),
@@ -58,7 +66,8 @@ public class GlobalHandlerException {
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ErrorDto> handleStorageException(
             StorageException e,
-            HttpServletRequest request){
+            HttpServletRequest request) {
+        logger.error("Error de almacenamiento en {} {}: {}", request.getMethod(), request.getRequestURI(), e.getMessage(), e);
 
         ErrorDto errorDto = new ErrorDto(
                 LocalDateTime.now(),
@@ -71,4 +80,3 @@ public class GlobalHandlerException {
     }
 
 }
-
